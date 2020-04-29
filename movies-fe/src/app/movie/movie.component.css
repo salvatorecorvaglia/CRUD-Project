@@ -1,0 +1,121 @@
+.card {
+  background: #0d0d0d !important;
+  color: white !important;
+}
+
+.scrollable{
+  margin-bottom: -10px;
+  margin-right: -20px;
+  margin-left: -20px;
+  overflow-y: auto;
+  max-height: 110px;
+}
+
+.p {
+  font-size: 8px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: dodgerblue;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: dodgerblue;
+}
+
+.star {
+  font-size: 1.2rem;
+  color: white;
+}
+.filled {
+  color: yellow;
+}
+
+fa.favourite-btn:hover {
+  color: red !important;
+}
+
+fa.favourite-btn:focus {
+  color: red !important;
+}
+
+fa.favourite-btn:active {
+  color: red !important;
+}
+
+fa.favourite-btn {
+  cursor: pointer;
+}
+
+#edit-movie-id {
+  padding-left: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  margin-bottom: -30px;
+  margin-left: 12.8rem;
+  z-index: 9999;
+  background: #0d0d0d;
+  width: 40px;
+  height: 50px;
+  border-radius: 3px;
+}
+
+fa#edit-fa-btn {
+  z-index: 9999 !important;
+  cursor: pointer;
+}
+
+.search {
+  width: 90%;
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid dodgerblue;
+  padding: 5px;
+  height: 36px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: dodgerblue;
+}
+
+.searchTerm:focus{
+  color: dodgerblue;
+}
+
+.searchButton {
+  width: 40px;
+  height: 36px;
+  border: 1px solid dodgerblue;
+  background: dodgerblue;
+  text-align: center;
+  color: white;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.btn-search-movies {
+  margin-right: 5px;
+}
+
+.container-fluid-main {
+  background: linear-gradient(rgba(255,255,255,1), rgba(255,255,255,0)),
+  url('../../assets/images/background-movies.jpg') no-repeat fixed center;
+}

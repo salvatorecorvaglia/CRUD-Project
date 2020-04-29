@@ -1,0 +1,242 @@
+<div class="container-fluid container-fluid-main">
+  <div class="row p-5 mb-2 text-center" *ngIf="moviePage">
+    <div class="col-3 mb-1 text-center" [@flyInOut]="'in'" *ngFor="let movie of moviePage.content | paginate: { itemsPerPage: 20, currentPage: page, id: 'list-movies-id', totalItems: moviePage.totalElements}">
+      <div class="card p-2" style="width: 16rem; height: 36rem;">
+          <div id="edit-movie-id" class="text-center" *ngIf="isSuperUser">
+            <fa id="edit-fa-btn" name="edit fa-lg fa-2x" (click)="openMovieUpdate(contentUpdate, movie)"></fa>
+          </div>
+          <img class="card-img-top" src="{{movie.poster}}" alt="{{movie.poster}}" style="width: 100%; height: 300px;">
+          <div class="card-body overflow-auto">
+            <div class="scrollable">
+              <h5 class="card-title">{{movie.title}}</h5>
+              <p class="card-text">{{movie.plot}}</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-6">
+                <h6>AV. {{getAverageRateMovie(movie.idmovie, movie.ratingsObj)}}/5</h6>
+              </div>
+              <div class="offset-2 col-2">
+                <fa class="favourite-btn" name="heart fa-lg" [ngStyle]="setColorToHeart(movie.addFavouritesObj)" (click)="addFavourite(movie)"></fa>
+              </div>
+            </div>
+            <star-rating value="{{setRateOnStars(movie.ratingsObj)}}" totalstars="5" checkedcolor="yellow" uncheckedcolor="white" size="24px" readonly="false" (rate)="onRate($event, movie.idmovie)"></star-rating>
+            <button class="btn btn-outline-primary" (click)="openMovieDetail(content, movie)">View Details</button>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="row text-center" *ngIf="moviePage">
+  <div class="col-12 mt-3 mb-2">
+    <pagination-controls (pageChange)="page = $event; getNewPageMovies()" id="list-movies-id"></pagination-controls>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header" *ngIf="selectedMovie">
+    <h4 class="modal-title" id="modal-basic-title">{{selectedMovie['title']}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-movie-viewer *ngIf="selectedMovie" [selectedMovie]="selectedMovie"></app-movie-viewer>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #contentUpdate let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-upadte-movie">Update {{selectedMovie['title']}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form name="updateMovieForm" #f="ngForm" (ngSubmit)="updateMovie(f)">
+
+      <div class="row">
+        <div class="offset-1 col-5">
+          <div class="form-group small">
+            <label for="country"><h6 class="text-credential label-auth">Country</h6></label>
+            <input required class="form-control" type="text" [ngModel]="selectedMovie['country']" #country="ngModel" name="country" id="country">
+          </div>
+          <div *ngIf="country.dirty && country.touched && country.invalid">
+            <div class="alert-danger small" *ngIf="country.errors['required']">
+              The field Country is required!
+            </div>
+          </div>
+        </div>
+
+        <div class="col-5">
+          <div class="form-group small">
+            <label for="production"><h6 class="text-credential label-auth">Production</h6></label>
+            <input required class="form-control" type="text" [ngModel]="selectedMovie['production']" #production="ngModel" name="production" id="production">
+          </div>
+          <div *ngIf="production.dirty && production.touched && production.invalid">
+            <div class="alert-danger small" *ngIf="production.errors['required']">
+              The field Production is required!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="offset-1 col-10">
+          <div class="form-group small">
+            <label for="plot"><h6 class="text-credential label-auth">Plot</h6></label>
+            <textarea required class="form-control" [ngModel]="selectedMovie['plot']" #plot="ngModel" name="plot" id="plot"></textarea>
+          </div>
+          <div *ngIf="plot.dirty && plot.touched && plot.invalid">
+            <div class="alert-danger small" *ngIf="plot.errors['required']">
+              The field Plot is required!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="offset-1 col-10">
+          <div class="form-group small">
+            <label for="adwards"><h6 class="text-credential label-auth">Adwards</h6></label>
+            <textarea required class="form-control" [ngModel]="selectedMovie['adwards']" #adwards="ngModel" name="adwards" id="adwards"></textarea>
+          </div>
+          <div *ngIf="adwards.dirty && adwards.touched && adwards.invalid">
+            <div class="alert-danger small" *ngIf="adwards.errors['required']">
+              The field Adwards is required!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="offset-1 col-3">
+          <div class="form-group small">
+            <label for="dvd"><h6 class="text-credential label-auth">Dvd</h6></label>
+            <input required class="form-control" type="date" [ngModel]="selectedMovie['dvd']" #dvd="ngModel" name="dvd" id="dvd">
+          </div>
+          <div *ngIf="dvd.dirty && dvd.touched && dvd.invalid">
+            <div class="alert-danger small" *ngIf="dvd.errors['required']">
+              The field Production is required!
+            </div>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="form-group small">
+            <label for="released"><h6 class="text-credential label-auth">Released</h6></label>
+            <input required class="form-control" type="date" [ngModel]="selectedMovie['released']" #released="ngModel" name="released" id="released">
+          </div>
+          <div *ngIf="released.dirty && released.touched && released.invalid">
+            <div class="alert-danger small" *ngIf="released.errors['required']">
+              The field Released is required!
+            </div>
+          </div>
+        </div>
+
+        <div class="col-2">
+          <div class="form-group small">
+            <label for="year"><h6 class="text-credential label-auth">Year</h6></label>
+            <input required class="form-control" type="number" [ngModel]="selectedMovie['year']" #year="ngModel" name="year" id="year">
+          </div>
+          <div *ngIf="year.dirty && year.touched && year.invalid">
+            <div class="alert-danger small" *ngIf="year.errors['required']">
+              The field Year is required!
+            </div>
+          </div>
+        </div>
+
+        <div class="col-2">
+          <div class="form-group small">
+            <label for="runtime"><h6 class="text-credential label-auth">Runtime</h6></label>
+            <input required class="form-control" type="text" [ngModel]="selectedMovie['runtime']" #runtime="ngModel" name="runtime" id="runtime">
+          </div>
+          <div *ngIf="runtime.dirty && runtime.touched && runtime.invalid">
+            <div class="alert-danger small" *ngIf="runtime.errors['required']">
+              The field Title is required!
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+    <div class="row">
+      <div class="col-12">
+        <div class="alert-success text-center">
+          <b>{{mexUpdate}}</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="alert-danger text-center">
+          <b>{{mexWrongUpdate}}</b>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" *ngIf="!confirmFlag">
+    <button type="button" class="btn btn-search-movies btn-outline-danger" (click)="selectionDeleteMovie()">Delete Movie</button>
+    <button [disabled]="!f.valid" type="button" class="btn btn-outline-dark" (click)="updateMovie(f);">Update</button>
+  </div>
+  <div class="modal-footer" *ngIf="confirmFlag">
+    Are you sure? &nbsp;&nbsp;&nbsp;
+    <button type="button" class="btn btn-search-movies btn-outline-danger" (click)="confirmedDelete(selectedMovie['idmovie'])">Yes</button>&nbsp;
+    <button type="button" class="btn btn-search-movies btn-outline-primary" (click)="notConfirm()">No</button>
+  </div>
+</ng-template>
+
+
+<ng-template #contentAddMovie let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-add-movie" *ngIf="!movieToAdd; else addMovieTitleBlock">Add Movie</h4>
+    <ng-template #addMovieTitleBlock><h4>Add {{movieToAdd['title']}}</h4></ng-template>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" >
+
+    <div class="row text-center ml-4 mr-5" *ngIf="!movieToAdd">
+      <div class="col-12 search">
+        <input #searchMovieTitle id="title-search-movie-id" name="searchMovieTitle" type="text" class="searchTerm" placeholder="Search By Movie Title">
+        <button type="button" class="searchButton" (click)="searchMovie(searchMovieTitle.value)"><i class="fa fa-search"></i></button>
+      </div>
+    </div>
+
+    <div class="container-fluid" *ngIf="movieToAdd">
+        <app-movie-viewer [selectedMovie]="movieToAdd"></app-movie-viewer>
+    </div>
+
+    <div class="row mt-1 ml-4 mr-5 mb-3">
+      <div class="col-12">
+        <div class="alert-success text-center">
+          <b>{{mexAdded}}</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-1 ml-4 mr-5 mb-3">
+      <div class="col-12">
+        <div class="alert-danger text-center">
+          <b>{{mexWrongAdded}}</b>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" *ngIf="movieToAdd">
+    <div class="row">
+      <div class="col-12">
+        <button type="button" class="btn btn-search-movies btn-outline-primary" *ngIf="movieToAdd" (click)="comeBack()">Back</button>
+        <button type="button" class="btn btn-outline-danger" *ngIf="movieToAdd" (click)="addMovie()">Add Movie</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<button class="btn btn-danger fixed-bottom" *ngIf="isSuperUser" style="width: 100%" (click)="openModalToAddMovie(contentAddMovie)">A&nbsp;d&nbsp;d&nbsp; M&nbsp;o&nbsp;v&nbsp;i&nbsp;e</button>
