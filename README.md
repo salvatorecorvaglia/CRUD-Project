@@ -7,3 +7,7 @@ CRUD is an acronym that comes from the world of computer programming and refers 
 Organizations that keep track of customer data, accounts, payment information, health data, and other records require data storage hardware and applications that provide persistent storage. This data is typically organized into a database, which is simply an organized collection of data that may be viewed electronically. There are many types of databases: hierarchical databases, graph databases, and object-oriented databases to name a few. The most commonly implemented type of database is a **relational database**, which consists of data tabled in rows and columns and connected to other tables with complementary information by a system of keywords that includes **primary keys and foreign keys**.
 
 The **CRUD** acronym identifies all of the major functions that are inherent to **relational databases** and the applications used to manage them, which include Oracle Database, Microsoft SQL Server, MySQL, and others.
+
+### OMDb API - The Open Movie Database
+
+The [OMDb API](https://www.omdbapi.com/) is a RESTful web service to obtain movie information, all content and images on the site are contributed and maintained by our users.
